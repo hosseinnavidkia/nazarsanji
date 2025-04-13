@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>نظر سنجی نظافت بلوک‌ها</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f8f9fa; padding: 15px; min-height: 100vh; }
+        .form-container { max-width: 100%; margin: 0 auto; background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; font-size: 1.4rem; margin-bottom: 1.5rem; text-align: center; }
+        .form-group { margin-bottom: 1rem; }
+        label { display: block; margin-bottom: 0.5rem; font-size: 0.9rem; color: #495057; font-weight: bold; }
+        select, input, textarea { width: 100%; padding: 0.8rem; border: 1px solid #dee2e6; border-radius: 8px; font-size: 0.95rem; background: #fff; }
+        textarea { height: 100px; resize: vertical; }
+        .rating { display: flex; gap: 0.5rem; justify-content: space-between; }
+        .rating-option { flex: 1; text-align: center; }
+        .rating-option input { display: none; }
+        .rating-option label { display: block; padding: 0.8rem; background: #f8f9fa; border-radius: 8px; font-size: 0.85rem; cursor: pointer; transition: all 0.2s; }
+        .rating-option input:checked + label { background: #3498db; color: white; }
+        button { width: 100%; padding: 1rem; background: #3498db; color: white; border: none; border-radius: 8px; font-size: 1rem; margin-top: 1rem; cursor: pointer; transition: background 0.2s; }
+        button:hover { background: #2980b9; }
+        #results { margin-top: 1.5rem; padding: 1rem; background: #f8f9fa; border-radius: 8px; border: 1px solid #ddd; display: none; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.85rem; }
+        th, td { border: 1px solid #ddd; padding: 0.5rem; text-align: center; }
+        th { background-color: #f2f2f2; }
+        .password-prompt { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .password-box { background: white; padding: 1.5rem; border-radius: 12px; width: 90%; max-width: 300px; }
+        .creator { text-align: center; font-size: 0.8rem; color: #666; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #eee; }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h1>نظر سنجی رضایتمندی پرسنل از کاخدار و نظافت‌چی‌ها</h1>
+        
+        <form id="surveyForm">
+            <div class="form-group">
+                <label for="block">بلوک/سوله مورد نظر:</label>
+                <select id="block" required>
+                    <option value="">-- انتخاب کنید --</option>
+                    <option value="بلوک A">بلوک A</option>
+                    <option value="بلوک B">بلوک B</option>
+                    <option value="بلوک C">بلوک C</option>
+                    <option value="سوله 1">سوله 1</option>
+                    <option value="سوله 2">سوله 2</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="khadamdar">نام کاخدار:</label>
+                <input type="text" id="khadamdar" required placeholder="نام کاخدار را وارد کنید">
+            </div>
+
+            <div class="form-group">
+                <label for="cleaner">نام نظافت‌چی:</label>
+                <input type="text" id="cleaner" required placeholder="نام نظافت‌چی را وارد کنید">
+            </div>
+
+            <div class="form-group">
+                <label>میزان رضایت از کاخدار:</label>
+                <div class="rating">
+                    <div class="rating-option">
+                        <input type="radio" id="khadamdar1" name="khadamdarRating" value="1" required>
+                        <label for="khadamdar1">1 (ضعیف)</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="khadamdar2" name="khadamdarRating" value="2">
+                        <label for="khadamdar2">2</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="khadamdar3" name="khadamdarRating" value="3">
+                        <label for="khadamdar3">3 (متوسط)</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="khadamdar4" name="khadamdarRating" value="4">
+                        <label for="khadamdar4">4</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="khadamdar5" name="khadamdarRating" value="5">
+                        <label for="khadamdar5">5 (عالی)</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>میزان رضایت از نظافت‌چی:</label>
+                <div class="rating">
+                    <div class="rating-option">
+                        <input type="radio" id="cleaner1" name="cleanerRating" value="1" required>
+                        <label for="cleaner1">1 (ضعیف)</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="cleaner2" name="cleanerRating" value="2">
+                        <label for="cleaner2">2</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="cleaner3" name="cleanerRating" value="3">
+                        <label for="cleaner3">3 (متوسط)</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="cleaner4" name="cleanerRating" value="4">
+                        <label for="cleaner4">4</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="cleaner5" name="cleanerRating" value="5">
+                        <label for="cleaner5">5 (عالی)</label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>میزان رضایت از نظافت سرویس‌های بهداشتی:</label>
+                <div class="rating">
+                    <div class="rating-option">
+                        <input type="radio" id="toilet1" name="toiletRating" value="1" required>
+                        <label for="toilet1">1 (ضعیف)</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="toilet2" name="toiletRating" value="2">
+                        <label for="toilet2">2</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="toilet3" name="toiletRating" value="3">
+                        <label for="toilet3">3 (متوسط)</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="toilet4" name="toiletRating" value="4">
+                        <label for="toilet4">4</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="toilet5" name="toiletRating" value="5">
+                        <label for="toilet5">5 (عالی)</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>میزان رضایت از نظافت راهروها و فضای عمومی:</label>
+                <div class="rating">
+                    <div class="rating-option">
+                        <input type="radio" id="hall1" name="hallRating" value="1" required>
+                        <label for="hall1">1 (ضعیف)</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="hall2" name="hallRating" value="2">
+                        <label for="hall2">2</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="hall3" name="hallRating" value="3">
+                        <label for="hall3">3 (متوسط)</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="hall4" name="hallRating" value="4">
+                        <label for="hall4">4</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="hall5" name="hallRating" value="5">
+                        <label for="hall5">5 (عالی)</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>میزان رضایت از نظافت اتاق‌ها:</label>
+                <div class="rating">
+                    <div class="rating-option">
+                        <input type="radio" id="room1" name="roomRating" value="1" required>
+                        <label for="room1">1 (ضعیف)</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="room2" name="roomRating" value="2">
+                        <label for="room2">2</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="room3" name="roomRating" value="3">
+                        <label for="room3">3 (متوسط)</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="room4" name="roomRating" value="4">
+                        <label for="room4">4</label>
+                    </div>
+                    <div class="rating-option">
+                        <input type="radio" id="room5" name="roomRating" value="5">
+                        <label for="room5">5 (عالی)</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="comments">نقاط قوت و پیشنهادات:</label>
+                <textarea id="comments" placeholder="نظرات خود را بنویسید..."></textarea>
+            </div>
+
+            <button type="submit">ثبت نظر</button>
+        </form>
+
+        <div class="buttons-container">
+            <button type="button" id="showResults">نمایش نتایج</button>
+            <button type="button" id="exportResults">خروجی Excel</button>
+            <button type="button" id="clearData" style="background-color: #e74c3c;">پاک کردن داده‌ها</button>
+        </div>
+
+        <div id="results">
+            <h2>نتایج نظر سنجی</h2>
+            <div id="resultsData"></div>
+        </div>
+
+        <div class="creator">طراحی و توسعه: مهندس حسین نویدکیا</div>
+    </div>
+
+    <div class="password-prompt" id="passwordPrompt">
+        <div class="password-box">
+            <h3>لطفاً رمز عبور را وارد کنید</h3>
+            <input type="password" id="passwordInput" placeholder="رمز عبور">
+            <button id="submitPassword">تایید</button>
+            <button id="cancelPassword" style="background-color: #e74c3c; margin-top: 0.5rem;">انصراف</button>
+        </div>
+    </div>
+
+    <script>
+        // رمز عبور (فقط برای توسعه‌دهنده قابل مشاهده است)
+        const PASSWORD = "2443";
+
+        document.getElementById('surveyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = {
+                block: document.getElementById('block').value,
+                khadamdar: document.getElementById('khadamdar').value,
+                cleaner: document.getElementById('cleaner').value,
+                khadamdarRating: document.querySelector('input[name="khadamdarRating"]:checked').value,
+                cleanerRating: document.querySelector('input[name="cleanerRating"]:checked').value,
+                toiletRating: document.querySelector('input[name="toiletRating"]:checked').value,
+                hallRating: document.querySelector('input[name="hallRating"]:checked').value,
+                roomRating: document.querySelector('input[name="roomRating"]:checked').value,
+                comments: document.getElementById('comments').value,
+                timestamp: new Date().toLocaleString('fa-IR')
+            };
+
+            const existingData = localStorage.getItem('surveyResponses');
+            let responses = existingData ? JSON.parse(existingData) : [];
+            responses.push(formData);
+            localStorage.setItem('surveyResponses', JSON.stringify(responses));
+            alert('نظر شما با موفقیت ثبت شد!');
+            this.reset();
+        });
+
+        function displayResultsInFarsi(responses) {
+            const resultsContainer = document.getElementById('resultsData');
+            resultsContainer.innerHTML = '';
+            
+            if (responses.length === 0) {
+                resultsContainer.innerHTML = '<p style="text-align:center;color:#777;">هیچ داده‌ای برای نمایش وجود ندارد.</p>';
+                return;
+            }
+            
+            const table = document.createElement('table');
+            const thead = document.createElement('thead');
+            const headerRow = document.createElement('tr');
+            
+            // ترتیب جدید: کاخدار اول، سپس نظافتچی
+            const headers = ['بلوک', 'نام کاخدار', 'رضایت کاخدار', 'نام نظافتچی', 'رضایت نظافتچی', 'رضایت سرویس بهداشتی', 'رضایت راهروها', 'رضایت اتاق‌ها', 'نظرات', 'تاریخ ثبت'];
+            
+            headers.forEach(headerText => {
+                const th = document.createElement('th');
+                th.textContent = headerText;
+                headerRow.appendChild(th);
+            });
+            
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+            
+            const tbody = document.createElement('tbody');
+            responses.forEach(response => {
+                const row = document.createElement('tr');
+                
+                // ترتیب متناظر با هدرها
+                const fields = [
+                    response.block,
+                    response.khadamdar,
+                    response.khadamdarRating,
+                    response.cleaner,
+                    response.cleanerRating,
+                    response.toiletRating,
+                    response.hallRating,
+                    response.roomRating,
+                    response.comments || '-',
+                    response.timestamp
+                ];
+                
+                fields.forEach(field => {
+                    const td = document.createElement('td');
+                    td.textContent = field;
+                    row.appendChild(td);
+                });
+                
+                tbody.appendChild(row);
+            });
+            
+            table.appendChild(tbody);
+            resultsContainer.appendChild(table);
+        }
+
+        function showPasswordPrompt(callback) {
+            const passwordPrompt = document.getElementById('passwordPrompt');
+            const passwordInput = document.getElementById('passwordInput');
+            passwordPrompt.style.display = 'flex';
+            passwordInput.value = '';
+            passwordInput.focus();
+            
+            document.getElementById('submitPassword').onclick = () => {
+                if (passwordInput.value === PASSWORD) {
+                    passwordPrompt.style.display = 'none';
+                    callback(true);
+                } else {
+                    alert('رمز عبور اشتباه است!');
+                    passwordInput.value = '';
+                }
+            };
+            
+            document.getElementById('cancelPassword').onclick = () => {
+                passwordPrompt.style.display = 'none';
+                callback(false);
+            };
+            
+            passwordInput.onkeypress = (e) => {
+                if (e.key === 'Enter') document.getElementById('submitPassword').click();
+            };
+        }
+
+        document.getElementById('showResults').addEventListener('click', () => {
+            showPasswordPrompt((authenticated) => {
+                if (authenticated) {
+                    const responses = JSON.parse(localStorage.getItem('surveyResponses') || '[]');
+                    displayResultsInFarsi(responses);
+                    document.getElementById('results').style.display = 'block';
+                }
+            });
+        });
+
+        document.getElementById('exportResults').addEventListener('click', () => {
+            showPasswordPrompt((authenticated) => {
+                if (authenticated) {
+                    const responses = JSON.parse(localStorage.getItem('surveyResponses') || []);
+                    if (responses.length === 0) {
+                        alert('هیچ داده‌ای برای ذخیره وجود ندارد!');
+                        return;
+                    }
+                    
+                    // هدرهای جدول با ترتیب جدید
+                    let csv = 'بلوک,نام کاخدار,رضایت کاخدار,نام نظافتچی,رضایت نظافتچی,رضایت سرویس بهداشتی,رضایت راهروها,رضایت اتاق‌ها,نظرات,تاریخ ثبت\n';
+                    
+                    // داده‌ها با جدول‌بندی دقیق
+                    responses.forEach(response => {
+                        csv += `"${response.block}","${response.khadamdar}",${response.khadamdarRating},"${response.cleaner}",${response.cleanerRating},${response.toiletRating},${response.hallRating},${response.roomRating},"${response.comments || ''}",${response.timestamp}\n`;
+                    });
+                    
+                    // ایجاد فایل اکسل با فرمت‌بندی صحیح
+                    const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = 'نتایج_نظر_سنجی.csv';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
+            });
+        });
+
+        document.getElementById('clearData').addEventListener('click', () => {
+            showPasswordPrompt((authenticated) => {
+                if (authenticated && confirm('آیا مطمئن هستید که می‌خواهید تمام داده‌ها را پاک کنید؟ این عمل غیرقابل بازگشت است.')) {
+                    localStorage.removeItem('surveyResponses');
+                    alert('تمام داده‌ها با موفقیت پاک شدند.');
+                    document.getElementById('resultsData').innerHTML = '';
+                    document.getElementById('results').style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
